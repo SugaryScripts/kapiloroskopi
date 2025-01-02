@@ -1,0 +1,151 @@
+{% extends 'layout.html' %}
+{% block title %}Data{% endblock %}
+{% block nav_title %}Data{% endblock nav_title %}
+{% block breadcrumb %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="#">Aplikasi</a></li>
+            <li aria-current="page" class="breadcrumb-item active">Data</li>
+        </ol>
+    </nav>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="container-xxl flex-grow-1 container-p-y">
+
+        <div class="row">
+
+            {% include("nav_top.html") %}
+
+            <div class="col-12">
+
+                <div class="card mb-4">
+                    <div class="d-flex align-items-end row">
+                        <div class="card-body px-10">
+                            <p class="mb-3">
+                                Halaman ini menampilkan hasil prediksi berdasarkan data yang diinputkan oleh pengguna.
+                                Setiap kali form disubmit, data yang dimasukkan akan disimpan ke dalam database bersama
+                                dengan hasil prediksinya. Silakan isi form di bawah untuk melakukan prediksi.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Basic Bootstrap Table -->
+                <div class="card mb-4">
+                    <h5 class="card-header">Prediction Log Data</h5>
+                    <div class="card-body">
+                        <div class="table-responsive text-nowrap">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Usia</th>
+                                    <th>Sistolik</th>
+                                    <th>Diastolik</th>
+                                    <th>Gula Darah</th>
+                                    <th>Kolesterol</th>
+                                    <th>Asam Urat</th>
+                                    <th>BMI</th>
+                                    <th>Otot Skeletal</th>
+                                    <th>Lemak Tubuh</th>
+                                    <th>Lemak Visceral</th>
+                                    <th>Resting Metabolisme</th>
+                                    <th>Usia Sel</th>
+                                    <th>Subcutan Fat</th>
+                                    <th>Merokok</th>
+                                    <th>Aktivitas</th>
+                                    <th>Prediction Result</th>
+                                    <th>Normal Score</th>
+                                    <th>Abnormal Score</th>
+                                </tr>
+                                </thead>
+                                <tbody class="table-border-bottom-0">
+                                {% for prediction in predictions %}
+                                    <tr>
+                                        <td>{{ prediction.id }}</td>
+                                        <td>{{ prediction.usia }}</td>
+                                        <td>{{ prediction.sistolik }}</td>
+                                        <td>{{ prediction.diastolik }}</td>
+                                        <td>{{ prediction.gula_darah }}</td>
+                                        <td>{{ prediction.kolesterol }}</td>
+                                        <td>{{ prediction.asam_urat }}</td>
+                                        <td>{{ prediction.bmi }}</td>
+                                        <td>{{ prediction.otot_skeletal }}</td>
+                                        <td>{{ prediction.lemak_tubuh }}</td>
+                                        <td>{{ prediction.lemak_viscera }}</td>
+                                        <td>{{ prediction.resting_metabolisme }}</td>
+                                        <td>{{ prediction.usia_sel }}</td>
+                                        <td>{{ prediction.subcutan_fat }}</td>
+                                        <td>{{ prediction.merokok }}</td>
+                                        <td>{{ prediction.aktivitas }}</td>
+                                        <td>{{ prediction.prediction_result }}</td>
+                                        <td>{{ prediction.normal_score }}</td>
+                                        <td>{{ prediction.abnormal_score }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row align-items-center">
+                            <div class="col-sm-12 col-md-6">
+                                <div class="dataTables_info" id="DataTables_Table_0_info" role="status"
+                                     aria-live="polite">
+                                    Menampilkan {{ (pagination.page - 1) * pagination.per_page + 1 }}
+                                    sampai {{ (pagination.page * pagination.per_page) if pagination.page * pagination.per_page <= pagination.total else pagination.total }}
+                                    dari {{ pagination.total }} butir data
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6 text-right">
+                                <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
+                                    <ul class="pagination justify-content-end mb-0">
+                                        <li class="paginate_button page-item {% if not pagination.has_prev %}disabled{% endif %}"
+                                            id="DataTables_Table_0_previous">
+                                            <a href="{{ url_for('menu.route_data', page=pagination.prev_num) }}"
+                                               aria-controls="DataTables_Table_0" role="link"
+                                               {% if not pagination.has_prev %}tabindex="-1"{% endif %}
+                                               class="page-link">
+                                                <i class="bx bx-chevron-left bx-18px"></i>
+                                            </a>
+                                        </li>
+
+                                        {% for page_num in pagination.iter_pages() %}
+                                            {% if page_num %}
+                                                <li class="paginate_button page-item {% if page_num == pagination.page %}active{% endif %}">
+                                                    <a href="{{ url_for('menu.route_data', page=page_num) }}"
+                                                       aria-controls="DataTables_Table_0" role="link"
+                                                       class="page-link">{{ page_num }}</a>
+                                                </li>
+                                            {% else %}
+                                                <li class="paginate_button page-item disabled"><a
+                                                        class="page-link">…</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+
+                                        <li class="paginate_button page-item {% if not pagination.has_next %}disabled{% endif %}"
+                                            id="DataTables_Table_0_next">
+                                            <a href="{{ url_for('menu.route_data', page=pagination.next_num) }}"
+                                               aria-controls="DataTables_Table_0" role="link"
+                                               {% if not pagination.has_next %}tabindex="-1"{% endif %}
+                                               class="page-link">
+                                                <i class="bx bx-chevron-right bx-18px"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+                <!--/ Basic Bootstrap Table -->
+
+            </div>
+
+        </div>
+    </div>
+    <!-- / Content -->
+{% endblock content %}

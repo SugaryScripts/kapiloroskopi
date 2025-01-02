@@ -1,0 +1,123 @@
+{% extends 'layout.html' %}
+{% block title %}Prediksi{% endblock %}
+{% block nav_title %}Prediksi{% endblock nav_title %}
+{% block breadcrumb %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="#">Aplikasi</a></li>
+            <li aria-current="page" class="breadcrumb-item active">Prediksi</li>
+        </ol>
+    </nav>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="container-xxl flex-grow-1 container-p-y">
+        {% include("nav_top.html") %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <div class="row">
+                <div class="{% if prediction_result or form.errors %} col-lg-8 {% else %} col-12 {% endif %} mb-4 order-0">
+                    <div class="card mb-4">
+                        <div class="d-flex align-items-end row">
+                            <div class="card-body px-10">
+                                <p class="mb-3">
+                                    Pilih gambar dan klik tombol <span class="fw-bold">Lakukan Prediksi</span> untuk mengklasifikasikan gambar.
+                                </p>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary">Lakukan Prediksi</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Image Upload Form -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 form-group mb-3">
+                                    {{ form.image.label }}
+                                    {{ form.image(class="form-control" + (' is-invalid' if form.image.errors else ''),
+                                                onchange="previewImage(event)") }}
+                                    {% if form.image.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.image.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Image Preview -->
+                                <div class="col-12 mt-3">
+                                    <div id="imagePreview" class="text-center" style="display: none;">
+                                        <img id="preview" src="" alt="Preview" class="img-fluid" style="max-height: 300px;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-4 order-1">
+                    <div class="row">
+                        {% if form.errors %}
+                            <div class="card mb-4">
+                                <div class="d-flex align-items-end row">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-danger">Oops!</h5>
+                                        <ul class="list-unstyled mb-4">
+                                            {% for error in form_errors %}
+                                                <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if prediction_result %}
+                            <div class="card mb-4">
+                                <div class="d-flex align-items-end row">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-primary">Prediksi Berhasil! 🎉</h5>
+                                        <p class="mt-4">
+                                            Gambar terklasifikasi sebagai: <span class="text-primary fw-bold">{{ prediction_result }}</span>
+                                            {% if confidence %}
+                                            <!--<br>
+                                            Tingkat keyakinan: <span class="text-primary fw-bold">{{ confidence }}%</span>-->
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
+{% block scripts %}
+<!-- JavaScript for image preview -->
+    <script>
+        function previewImage(event) {
+            const preview = document.getElementById('preview');
+            const previewDiv = document.getElementById('imagePreview');
+            const file = event.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    previewDiv.style.display = 'block';
+                }
+
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '';
+                previewDiv.style.display = 'none';
+            }
+        }
+    </script>
+{% endblock scripts %}
